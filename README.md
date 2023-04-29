@@ -5,7 +5,7 @@ My collections of several trading strategies i made for anyone to use. Written i
 
 # Index
 ## Price Action and Chart Pattern
-1. [__Smash Day__](https://github.com/handiko/TradingStrategy-Public/blob/main/Price%20Action%20and%20Chart%20Pattern/Smash%20Day/README.md)
+1. [__Smash Day__](https://github.com/handiko/TradingStrategy-Public//Price%20Action%20and%20Chart%20Pattern/Smash%20Day)
 
 ## Indicator Based
 
