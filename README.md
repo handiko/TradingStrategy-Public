@@ -2,6 +2,7 @@
 My collections of several trading strategies i made for anyone to use. Written in MQL5 and PineScript programming langguage.
 
 ![](./mql5.png)
+![](./Pine_Script_logo_text.png)
 
 # Index
 ## Price Action and Chart Pattern
