@@ -17,7 +17,7 @@ All of the calculations are executed at today's candle open. The calculations ig
 
 If there is a trade still running, any subsequent signal to the same direction is ignored.
 
-![](./entry.png)
+![](./Entry.png)
 
 ## Filter
 X number of days (lookback) in the point 2 above become the entry filter. The premise is, after X number of days, any break of previous day's structure (high or low) to the opposite direction of the trend, become the sign of a trend exhaustion and likely to be followed by a trend reversal. Thus, we catch the next trend quite early.
