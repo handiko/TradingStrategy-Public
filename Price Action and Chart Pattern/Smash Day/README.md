@@ -30,7 +30,7 @@ X number of days (lookback) in the point 2 above become the entry filter. The pr
 * __atrPeriod__ : ATR Period to calculate ATR-base stop loss distance.
 * __atrMult__ : --> SL distance = ATR * atrMult.
 * __slMode__ : SLMODE_ATR means the stop loss is calculated based on ATR. SLMODE_FIXED means the stop loss is a fixed value.
-* __slPoint__ : SL distance is points. Used when SLMODE_FIXED is selected.
+* __slPoint__ : SL distance in points. Used when SLMODE_FIXED is selected.
 * __tpFactor__ : --> TP distance = SL distance * tpFactor. Used in either ATR and fixed SL.
 * __pendingDistance__ : buffer distance in points away from the high/low or close price whichever farthest from the close price. Used to avoid false confirmation.
 * __ExpirationHours__ : pending order expiration in hours.
@@ -39,7 +39,7 @@ X number of days (lookback) in the point 2 above become the entry filter. The pr
 EURUSD D1, 2013-01-01 until 2023-04-29, 10000 USD initial balance, 0.1 lot/trade. Risking 2350 points and 0.75 TP factor.
 The set file used in the test is included.
 
-* Net profit: 7749.72. Which means 7749.72 pips profit. (test is using 0.1 lot/trade)
+* Net profit: 7749.72 USD. Which means 7749.72 pips of profit if using 0.1 lot/trade.
 * Profit trades: 73.68%
 * Total trades: 114
 * Profit factor: 2.12
