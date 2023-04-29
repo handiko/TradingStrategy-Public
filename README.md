@@ -1,5 +1,5 @@
 # Trading Strategy Collections - Public
-My collections of several trading strategies i made for anyone to use. Written in MQL5 and PineScript programming langguage.
+My collections of several trading strategies I've made for anyone to use. Written in MQL5 and PineScript programming langguage.
 
 ![](./mql5.png)
 ![](./Pine_Script_logo_text.png)
