@@ -17,6 +17,8 @@ All of the calculations are executed at today's candle open. The calculations ig
 
 If there is a trade still running, any subsequent signal to the same direction is ignored.
 
+![](./entry.png)
+
 ## Filter
 X number of days (lookback) in the point 2 above become the entry filter. The premise is, after X number of days, any break of previous day's structure (high or low) to the opposite direction of the trend, become the sign of a trend exhaustion and likely to be followed by a trend reversal. Thus, we catch the next trend quite early.
 
@@ -42,3 +44,6 @@ EURUSD D1, 2013-01-01 until 2023-04-29, 10000 USD initial balance, 0.1 lot/trade
 * Sharpe ratio: 1.82
 * Max. consecutive loss: 2x
 * Max. consecutive profit: 8x
+
+![](./equityCurve.png)
+![](./summary.png)
