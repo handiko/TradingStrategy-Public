@@ -18,8 +18,8 @@ input group  "Risk Management"
 static input double Lots = 1.0;
 static input double RiskPercent = 1.0;          // RiskPercent (0 = Fix lot)
 input int AtrPeriod = 14;                       // ATR Period
-input double AtrMultSL = 0.1;                   // SL ATR Multiplier
-input double TpFactor = 2.6;                    // TP Multiplier
+input double AtrMultSL = 0.05;                  // SL ATR Multiplier
+input double TpFactor = 3.9;                    // TP Multiplier
 
 input group "Technical Parameters"
 input int SearchDepth = 200;                    // Liquidity Search Depth (bars)
