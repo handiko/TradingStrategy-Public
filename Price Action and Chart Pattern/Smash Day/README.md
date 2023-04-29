@@ -20,14 +20,14 @@ If there is a trade still running, any subsequent signal to the same direction i
 ![](./Entry.png)
 
 ## Filter
-X number of days (lookback) in the point 2 above become the entry filter. The premise is, after X number of days, any break of previous day's structure (high or low) to the opposite direction of the trend, become the sign of a trend exhaustion and likely to be followed by a trend reversal. Thus, we catch the next trend quite early.
+X number of days (lookback) in the point 2 above become the entry filter. The premise is, after X number of days, any break of previous day's structure (high or low) to the opposite direction of the trend, become the sign of a trend exhaustion, and likely to be followed by a trend reversal. Thus, we catch the next trend quite early.
 
 ## Input Parameters
 * __Magic__ : EA's magic number
 * __Lots__ : Lot opened on each trade.
-* __Timeframe__ : Timeframe of execution. D1 = default
+* __Timeframe__ : Timeframe of execution. Default is D1
 * __lookback__ : number of days to look back. (Filter)
-* __atrPeriod__ : ATR Period to calculate ATR-base stop loss distance.
+* __atrPeriod__ : ATR Period to calculate ATR-based stop loss distance.
 * __atrMult__ : --> SL distance = ATR * atrMult.
 * __slMode__ : SLMODE_ATR means the stop loss is calculated based on ATR. SLMODE_FIXED means the stop loss is a fixed value.
 * __slPoint__ : SL distance in points. Used when SLMODE_FIXED is selected.
