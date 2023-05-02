@@ -35,7 +35,8 @@ X number of days (lookback) in the point 2 above become the entry filter. The pr
 * __pendingDistance__ : buffer distance in points away from the high/low or close price whichever farthest from the close price. Used to avoid false confirmation.
 * __ExpirationHours__ : pending order expiration in hours.
 
-## Test & Results
+## Test & Results 
+### EURUSD Benchmark
 EURUSD D1, 2013-01-01 until 2023-04-29, 10000 USD initial balance, 0.1 lot/trade. Risking 2350 points and 0.75 TP factor.
 The set file used in the test is included.
 
@@ -44,8 +45,23 @@ The set file used in the test is included.
 * Total trades: 114
 * Profit factor: 2.12
 * Sharpe ratio: 1.82
-* Max. consecutive loss: 2x
-* Max. consecutive profit: 8x
+* Max. consecutive losses: 2x
+* Max. consecutive wins: 8x
 
 ![](./equityCurve.png)
 ![](./summary.png)
+
+### Porfolio Mode
+Portfolio consists of EURUSD,EURJPY,AUDUSD,AUDJPY, and GBPJPY. Test was done from 2015-01-01 until 2023-01-01, 10000 USD initial balance, pip calculation mode.
+The set file for each pair is not included.
+
+* Net profit: 26966.22 pips
+* Profit trades: 64.61%
+* Total trades: 356
+* Profit factor: 1.83
+* Max. consecutive losses: 4x
+* Max. consecutive wins: 12x
+
+![](./FivePairsEquityCurve.png)
+![](./FivePairsSummary.png)
+
