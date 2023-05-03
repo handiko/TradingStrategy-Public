@@ -17,9 +17,9 @@
 input group  "Risk Management"
 static input double Lots = 1.0;
 static input double RiskPercent = 1.0;          // RiskPercent (0 = Fix lot)
-input int AtrPeriod = 14;                       // ATR Period
-input double AtrMultSL = 0.05;                  // SL ATR Multiplier
-input double TpFactor = 3.9;                    // TP Multiplier
+input int AtrPeriod = 38;                       // ATR Period
+input double AtrMultSL = 0.1;                   // SL ATR Multiplier
+input double TpFactor = 4.0;                    // TP Multiplier
 
 input group "Technical Parameters"
 input int SearchDepth = 200;                    // Liquidity Search Depth (bars)
@@ -27,9 +27,9 @@ input int BufferDist = 0;                       // Liquidity Distance (points)
 //input int TakeProfit = 260;                   // Take Profit (points)
 //input int StopLoss = 100;                     // Stop Loss (points)
 input int TraillingStop = 5;                    // Trailling Stop (points)
-input int TraillingTrigger = 11;                // Trailling Stop Trigger (points)
+input int TraillingTrigger = 10;                // Trailling Stop Trigger (points)
 input ENUM_TIMEFRAMES Timeframe = PERIOD_M15;
-input int NumBars = 9;                          // Number of Bars evaluated
+input int NumBars = 10;                         // Number of Bars evaluated
 
 input group "Time Parameters"
 input int ExpirationHours = 4;                  // Expiration Hours
@@ -181,7 +181,7 @@ void OnTick()
 //+------------------------------------------------------------------+
 void IndicatorInit()
 {
-     atrHandle = iATR(_Symbol, PERIOD_D1, 14);
+     atrHandle = iATR(_Symbol, PERIOD_D1, AtrPeriod);
 
 }
 

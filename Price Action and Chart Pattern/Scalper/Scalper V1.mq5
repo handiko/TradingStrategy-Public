@@ -24,9 +24,9 @@ input int BufferDist = 0;                       // Liquidity Distance (points)
 input int TakeProfit = 260;                     // Take Profit (points)
 input int StopLoss = 100;                       // Stop Loss (points)
 input int TraillingStop = 5;                    // Trailling Stop (points)
-input int TraillingTrigger = 11;                // Trailling Stop Trigger (points)
+input int TraillingTrigger = 10;                // Trailling Stop Trigger (points)
 input ENUM_TIMEFRAMES Timeframe = PERIOD_M15;
-input int NumBars = 9;                          // Number of Bars evaluated
+input int NumBars = 10;                          // Number of Bars evaluated
 
 input group "Time Parameters"
 input int ExpirationHours = 4;                  // Expiration Hours
