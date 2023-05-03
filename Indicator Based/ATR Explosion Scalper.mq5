@@ -16,15 +16,22 @@ static input int InpMagic = 123;
 static input double InpLots = 0.1;
 input ENUM_TIMEFRAMES InpTimeframe = PERIOD_M15;
 input int InpBaselinePeriod = 200;
-input int InpAtrSlowPeriod = 20;
-input int InpAtrFastPeriod = 100;
+input int InpAtrBaselinePeriod = 50;
+input int InpAtrSlowPeriod = 100;
+input int InpAtrFastPeriod = 20;
+
+input int InpSlPoint = 300;
+input double InpTpFactor = 0.15;
+input int InpExpirationHours = 4;
 
 CTrade trade;
 int totalBars;
 ulong buyPos, sellPos;
+int tpPoint;
 
-int baselineHandle, atrFastHandle, atrSlowHandle;
-double baseline[], atrFast[], atrSlow[];
+
+int baselineHandle, atrBaselineHandle, atrFastHandle, atrSlowHandle;
+double baseline[], atrBaseline[], atrFast[], atrSlow[];
 
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
@@ -81,6 +88,7 @@ void OnDeinit(const int reason)
 void IndicatorInit()
 {
      baselineHandle = iMA(_Symbol, InpTimeframe, InpBaselinePeriod, 0, MODE_EMA, PRICE_CLOSE);
+     atrBaselineHandle = iATR(_Symbol, InpTimeframe, InpAtrBaselinePeriod);
      atrFastHandle = iATR(_Symbol, InpTimeframe, InpAtrFastPeriod);
      atrSlowHandle = iATR(_Symbol, InpTimeframe, InpAtrSlowPeriod);
 }
@@ -91,6 +99,7 @@ void IndicatorInit()
 void IndicatorDeinit()
 {
      IndicatorRelease(baselineHandle);
+     IndicatorRelease(atrBaselineHandle);
      IndicatorRelease(atrFastHandle);
      IndicatorRelease(atrSlowHandle);
 }
@@ -133,12 +142,14 @@ void OnTick()
 void ProcessIndicatorOnNewBar()
 {
      ArraySetAsSeries(baseline, true);
+     ArraySetAsSeries(atrBaseline, true);
      ArraySetAsSeries(atrFast, true);
      ArraySetAsSeries(atrSlow, true);
 
      CopyBuffer(baselineHandle, 0, 1, 1, baseline);
-     CopyBuffer(atrFastHandle, 0, 1, 1, atrFast);
-     CopyBuffer(atrSlowHandle, 0, 1, 1, atrSlow);
+     CopyBuffer(atrBaselineHandle, 0, 1, 1, atrBaseline);
+     CopyBuffer(atrFastHandle, 0, 1, 2, atrFast);
+     CopyBuffer(atrSlowHandle, 0, 1, 2, atrSlow);
 }
 
 //+------------------------------------------------------------------+
@@ -169,6 +180,43 @@ void processPos(ulong &posTicket)
 //+------------------------------------------------------------------+
 double findBuySignal()
 {
+     double open = iOpen(_Symbol, InpTimeframe, 1);
+     double high = iHigh(_Symbol, InpTimeframe, 1);
+     double low = iLow(_Symbol, InpTimeframe, 1);
+     double close = iClose(_Symbol, InpTimeframe, 1);
+
+     double openBefore = iOpen(_Symbol, InpTimeframe, 2);
+     double highBefore = iHigh(_Symbol, InpTimeframe, 2);
+     double lowBefore = iLow(_Symbol, InpTimeframe, 2);
+     double closeBefore = iClose(_Symbol, InpTimeframe, 2);
+
+     open = NormalizeDouble(open, _Digits);
+     high = NormalizeDouble(high, _Digits);
+     low = NormalizeDouble(low, _Digits);
+     close = NormalizeDouble(close, _Digits);
+
+     openBefore = NormalizeDouble(openBefore, _Digits);
+     highBefore = NormalizeDouble(highBefore, _Digits);
+     lowBefore = NormalizeDouble(lowBefore, _Digits);
+     closeBefore = NormalizeDouble(closeBefore, _Digits);
+
+     double baselineAtrUpperBand = baseline[0] + atrBaseline[0];
+     double baselineAtrLowerBand = baseline[0] - atrBaseline[0];
+
+     //candle is bullish
+     bool condition1 = close > open;
+
+     //candle is above the atrUpperBand
+     bool condition2 = ((close > baselineAtrUpperBand) && (low > baselineAtrLowerBand));
+
+     //atr breakout
+     bool condition3 = ((atrFast[0] > atrSlow[0]) && (atrFast[1] < atrSlow[1]));
+
+     double price = NormalizeDouble(high, _Digits);
+     if(condition1 && condition2 && condition3) {
+          return price;
+     }
+
      return 0;
 }
 
@@ -177,6 +225,43 @@ double findBuySignal()
 //+------------------------------------------------------------------+
 double findSellSignal()
 {
+     double open = iOpen(_Symbol, InpTimeframe, 1);
+     double high = iHigh(_Symbol, InpTimeframe, 1);
+     double low = iLow(_Symbol, InpTimeframe, 1);
+     double close = iClose(_Symbol, InpTimeframe, 1);
+
+     double openBefore = iOpen(_Symbol, InpTimeframe, 2);
+     double highBefore = iHigh(_Symbol, InpTimeframe, 2);
+     double lowBefore = iLow(_Symbol, InpTimeframe, 2);
+     double closeBefore = iClose(_Symbol, InpTimeframe, 2);
+
+     open = NormalizeDouble(open, _Digits);
+     high = NormalizeDouble(high, _Digits);
+     low = NormalizeDouble(low, _Digits);
+     close = NormalizeDouble(close, _Digits);
+
+     openBefore = NormalizeDouble(openBefore, _Digits);
+     highBefore = NormalizeDouble(highBefore, _Digits);
+     lowBefore = NormalizeDouble(lowBefore, _Digits);
+     closeBefore = NormalizeDouble(closeBefore, _Digits);
+
+     double baselineAtrUpperBand = baseline[0] + atrBaseline[0];
+     double baselineAtrLowerBand = baseline[0] - atrBaseline[0];
+
+     //candle is bearish
+     bool condition1 = close < open;
+
+     //candle is bellow the atrLowerBand
+     bool condition2 = ((close < baselineAtrLowerBand) && (high < baselineAtrUpperBand));
+
+     //atr breakout
+     bool condition3 = atrFast[0] > atrSlow[0];
+
+     double price = NormalizeDouble(high, _Digits);
+     if(condition1 && condition2 && condition3) {
+          return price;
+     }
+
      return 0;
 }
 
@@ -185,7 +270,20 @@ double findSellSignal()
 //+------------------------------------------------------------------+
 void executeBuy(double entry)
 {
+     entry = NormalizeDouble(entry, _Digits);
 
+     tpPoint = (int)(InpSlPoint * InpTpFactor);
+
+     double tp = entry + tpPoint * _Point;
+     double sl = entry - InpSlPoint * _Point;
+
+     tp = NormalizeDouble(tp, _Digits);
+     sl = NormalizeDouble(sl, _Digits);
+
+     datetime expiration = iTime(_Symbol, InpTimeframe, 0) + InpExpirationHours * PeriodSeconds(PERIOD_H1);
+
+     trade.BuyStop(InpLots, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expiration);
+     buyPos = trade.ResultOrder();
 }
 
 //+------------------------------------------------------------------+
