@@ -15,12 +15,11 @@
 #include <Trade/Trade.mqh>
 
 input group  "Risk Management"
-static input double Lots = 1.0;
-static input double RiskPercent = 1.0;          // RiskPercent (0 = Fix lot)
+static input double Lots = 0.1;
+static input double RiskPercent = 0.0;          // RiskPercent (0 = Fix lot)
 
 input group "Technical Parameters"
 input int SearchDepth = 200;                    // Liquidity Search Depth (bars)
-input int BufferDist = 0;                       // Liquidity Distance (points)
 input int TakeProfit = 260;                     // Take Profit (points)
 input int StopLoss = 100;                       // Stop Loss (points)
 input int TraillingStop = 5;                    // Trailling Stop (points)
@@ -43,6 +42,7 @@ ulong buyPos, sellPos;
 int totalBars;
 string currentTime, startTime, stopTime;
 bool tradingIsAllowed = false;
+int BufferDist = 0;
 
 int atrHandle;
 double atrVal[];
