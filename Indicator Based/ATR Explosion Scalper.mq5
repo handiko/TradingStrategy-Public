@@ -15,14 +15,13 @@
 static input int InpMagic = 123;
 static input double InpLots = 0.1;
 input ENUM_TIMEFRAMES InpTimeframe = PERIOD_M15;
-input int InpBaselinePeriod = 200;
-input int InpAtrBaselinePeriod = 50;
+input int InpBaselinePeriod = 100;
+input int InpAtrBaselinePeriod = 35;
 input int InpAtrSlowPeriod = 100;
 input int InpAtrFastPeriod = 20;
-
-input int InpSlPoint = 300;
-input double InpTpFactor = 0.15;
-input int InpExpirationHours = 4;
+input int InpSlPoint = 340;
+input double InpTpFactor = 0.45;
+input int InpExpirationHours = 13;
 
 CTrade trade;
 int totalBars;
@@ -255,9 +254,9 @@ double findSellSignal()
      bool condition2 = ((close < baselineAtrLowerBand) && (high < baselineAtrUpperBand));
 
      //atr breakout
-     bool condition3 = atrFast[0] > atrSlow[0];
+     bool condition3 = ((atrFast[0] > atrSlow[0]) && (atrFast[1] < atrSlow[1]));
 
-     double price = NormalizeDouble(high, _Digits);
+     double price = NormalizeDouble(low, _Digits);
      if(condition1 && condition2 && condition3) {
           return price;
      }
@@ -291,7 +290,20 @@ void executeBuy(double entry)
 //+------------------------------------------------------------------+
 void executeSell(double entry)
 {
+     entry = NormalizeDouble(entry, _Digits);
 
+     tpPoint = (int)(InpSlPoint * InpTpFactor);
+
+     double tp = entry - tpPoint * _Point;
+     double sl = entry + InpSlPoint * _Point;
+
+     tp = NormalizeDouble(tp, _Digits);
+     sl = NormalizeDouble(sl, _Digits);
+
+     datetime expiration = iTime(_Symbol, InpTimeframe, 0) + InpExpirationHours * PeriodSeconds(PERIOD_H1);
+
+     trade.SellStop(InpLots, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expiration);
+     buyPos = trade.ResultOrder();
 }
 
 //+------------------------------------------------------------------+
