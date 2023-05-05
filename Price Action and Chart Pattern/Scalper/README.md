@@ -1,19 +1,26 @@
-# Smash Day Trading Strategy
-A modified version of __Larry William's Smash Day__ trading strategy. Working on Daily timeframe (D1).
+# Scalper Trading Strategy
+**This strategy is risky. The average TP is quite low. The real life results will highly dependant to the trading costs. To maximize the profit potential, only use this strategy on a low commission, low spread, and low slippage broker, otherwise, the trading cost will eat up the profits.**
 
 ## Concept
-In an uptrend, a sell-stop pending order is placed just bellow yesterday's low. The premise is, if the uptrend is already happened for a long enough time, breaking yesterday's low often become a sign of exhausted trend. Therefore, a trend reversal is likely to come not long afterwards. Likewise but the opposite in a downtrend.
+At every swing point, a liquidity zone is built-up. Liquidity is any pending stop order placed at any price. If an upward price move hit a buy-stop order (**buy-side liquidity grab**), the stop order execution will move the price up further (breakout). Likewise but the opposite in a downtrend. Sometimes, the breakout will continue to move in the same direction further, or quickly fading. 
+At a swing point, there are tendencies of buy-stop order placed by a large number of market participant at relatively close price distance from one to another. Even though this is not always the case, we could utilize this liquidity into a scalping strategy. 
+By placing a stop order at the exact swing point, any liquidity grab will put our trade into a floating profit condition, and by using a tight trailling-stop loss, we can lock-in our profit very quickly.
+
+![](./concept.png)
 
 ## Rules for Entry
-All of the calculations are executed at today's candle open. The calculations ignore today's candle. Only looking from yesterday's candle and backward.
 * __Long__
-1. Yesterday's candle close must be lower than previous candle low.
-2. Yesterday's low must be the lowest price in the last X days. X is a variable to be optimized.
-3. Place a buy-stop order at the yesterday's high. This pending order must be executed in the next 48 hours. If not executed, delete it.
+1. Find a high swing point. A high swing point is characterized as a high of a candle surrounded by a number of lower high of another candles. The minimum number of candle to make the high swing point is optimizable.
+2. Check the time. If the time is in the low-spread period, place a buy-stop order at the exact high swing point. 
+3. If the stop order is executed, and the trade is already profit by X point, move the stop-loss just several points (Y) below the current bid price. 
+4. If the trade is run futher into more profit, keep moving the trailling stop-loss Y points just below the current bid price.
+5. The tralling stop movement is calculated in tick-by-tick basis.
 * __Short__
-1. Yesterday's candle close must be higher than previous candle high.
-2. Yesterday's high must be the highest price in the last X days. X is a variable to be optimized.
-3. Place a sell-stop order at the yesterday's low. This pending order must be executed in the next 48 hours. If not executed, delete it.
+1. Find a low swing point. A low swing point is characterized as a low of a candle surrounded by a number of higher low of another candles. The minimum number of candle to make the low swing point is optimizable.
+2. Check the time. If the time is in the low-spread period, place a sell-stop order at the exact low swing point. 
+3. If the stop order is executed, and the trade is already profit by X point, move the stop-loss just several points (Y) above the current ask price. 
+4. If the trade is run futher into more profit, keep moving the trailling stop-loss Y points just above the current ask price.
+5. The tralling stop movement is calculated in tick-by-tick basis.
 
 If there is a trade still running, any subsequent signal to the same direction is ignored.
 
