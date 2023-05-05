@@ -16,8 +16,6 @@
 
 input group  "Risk Management"
 static input double Lots = 0.1;
-static input double RiskPercent = 0.0;          // RiskPercent (0 = Fix lot)
-
 input group "Technical Parameters"
 input int SearchDepth = 200;                    // Liquidity Search Depth (bars)
 input int TakeProfit = 260;                     // Take Profit (points)
@@ -25,7 +23,7 @@ input int StopLoss = 100;                       // Stop Loss (points)
 input int TraillingStop = 5;                    // Trailling Stop (points)
 input int TraillingTrigger = 10;                // Trailling Stop Trigger (points)
 input ENUM_TIMEFRAMES Timeframe = PERIOD_M15;
-input int NumBars = 10;                          // Number of Bars evaluated
+input int NumBars = 10;                         // Number of Bars evaluated
 
 input group "Time Parameters"
 input int ExpirationHours = 4;                  // Expiration Hours
@@ -34,7 +32,7 @@ input int StartTradingTime = 7;                 // Trading Start at Hour (server
 input int StopTradingTime = 21;                 // Trading Stop at Hour (server time)
 
 input group "General Settings"
-input static int Magic = 2;                     // Magic Number
+input static int Magic = 1;                     // Magic Number
 
 CTrade trade;
 
@@ -291,13 +289,9 @@ void executeBuy(double entry)
      double sl = entry - StopLoss * _Point;
      sl = NormalizeDouble(sl, _Digits);
 
-     double lots = Lots;
-     if(RiskPercent > 0)
-          lots = calcLots(entry - sl);
-
      datetime expiration = iTime(_Symbol, Timeframe, 0) + ExpirationHours * PeriodSeconds(PERIOD_H1);
 
-     trade.BuyStop(lots, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expiration);
+     trade.BuyStop(Lots, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expiration);
 
      buyPos = trade.ResultOrder();
 }
@@ -319,35 +313,11 @@ void executeSell(double entry)
      double sl = entry + StopLoss * _Point;
      sl = NormalizeDouble(sl, _Digits);
 
-     double lots = Lots;
-     if(RiskPercent > 0)
-          lots = calcLots(sl - entry);
-
      datetime expiration = iTime(_Symbol, Timeframe, 0) + ExpirationHours * PeriodSeconds(PERIOD_H1);
 
-     trade.SellStop(lots, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expiration);
+     trade.SellStop(Lots, entry, _Symbol, sl, tp, ORDER_TIME_SPECIFIED, expiration);
 
      sellPos = trade.ResultOrder();
-}
-
-//+------------------------------------------------------------------+
-//|                                                                  |
-//+------------------------------------------------------------------+
-double calcLots(double slPoints)
-{
-     double risk = AccountInfoDouble(ACCOUNT_BALANCE) * RiskPercent / 100;
-
-     double ticksize = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_SIZE);
-     double tickvalue = SymbolInfoDouble(_Symbol, SYMBOL_TRADE_TICK_VALUE);
-     double lotstep = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
-
-     double moneyPerLotstep = slPoints / ticksize * tickvalue * lotstep;
-     double lots = MathFloor(risk / moneyPerLotstep) * lotstep;
-
-     lots = MathMin(lots, SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MAX));
-     lots = MathMax(lots, SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN));
-
-     return lots;
 }
 
 //+------------------------------------------------------------------+
