@@ -43,17 +43,4 @@ The set file used in the test is included.
 ![](./ScalperEquityCurve.png)
 ![](./ScalperSummary.png)
 
-### Porfolio Mode
-Portfolio consists of EURUSD and USDJPY. Test was done from 2015-01-01 until 2023-01-01, 10000 USD initial balance, pip calculation mode.
-The set file for each pair is not included.
-
-* Net profit: 26966.22 pips
-* Profit trades: 64.61%
-* Total trades: 356
-* Profit factor: 1.83
-* Max. consecutive losses: 4x
-* Max. consecutive wins: 12x
-
-![](./FivePairsEquityCurve.png)
-![](./FivePairsSummary.png)
 
