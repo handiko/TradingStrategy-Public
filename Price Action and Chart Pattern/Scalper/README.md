@@ -2,9 +2,10 @@
 **This strategy is risky. The average TP is quite low. The real life results will highly dependant to the trading costs. To maximize the profit potential, only use this strategy on a low commission, low spread, and low slippage broker, otherwise, the trading cost will eat up the profits.**
 
 ## Concept
-At every swing point, a liquidity zone is built-up. Liquidity is any pending stop order placed at any price. If an upward price move hit a buy-stop order (**buy-side liquidity grab**), the stop order execution will move the price up further (breakout). Likewise but the opposite in a downtrend. Sometimes, the breakout will continue to move in the same direction further, or quickly fading. 
+At every swing point, a liquidity zone is built-up. Liquidity is any pending stop order placed at any price. If an upward price move hit a buy-stop order (**buy-side liquidity grab**), the stop order execution will move the price up further (breakout). Sometimes, the breakout will continue to move in the same direction further, or quickly fading. 
 At a swing point, there are tendencies of buy-stop order placed by a large number of market participant at relatively close price distance from one to another. Even though this is not always the case, we could utilize this liquidity into a scalping strategy. 
 By placing a stop order at the exact swing point, any liquidity grab will put our trade into a floating profit condition, and by using a tight trailling-stop loss, we can lock-in our profit very quickly.
+Likewise but the opposite in a downtrend.
 
 ![](./concept.png)
 
