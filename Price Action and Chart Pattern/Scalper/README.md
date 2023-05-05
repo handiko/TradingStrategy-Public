@@ -24,42 +24,27 @@ By placing a stop order at the exact swing point, any liquidity grab will put ou
 
 Each pending order is only live for Z hours before deleted/expired. If there is already a pending order or a trade still running, any subsequent signal to the same direction is ignored.
 
-![](./Entry.png)
-
-## Filter
-X number of days (lookback) in the point 2 above become the entry filter. The premise is, after X number of days, any break of previous day's structure (high or low) to the opposite direction of the trend, become the sign of a trend exhaustion, and likely to be followed by a trend reversal. Thus, we catch the next trend quite early.
-
-## Input Parameters
-* __Magic__ : EA's magic number
-* __Lots__ : Lot opened on each trade.
-* __Timeframe__ : Timeframe of execution. Default is D1
-* __lookback__ : number of days to look back. (Filter)
-* __atrPeriod__ : ATR Period to calculate ATR-based stop loss distance.
-* __atrMult__ : --> SL distance = ATR * atrMult.
-* __slMode__ : SLMODE_ATR means the stop loss is calculated based on ATR. SLMODE_FIXED means the stop loss is a fixed value.
-* __slPoint__ : SL distance in points. Used when SLMODE_FIXED is selected.
-* __tpFactor__ : --> TP distance = SL distance * tpFactor. Used in either ATR and fixed SL.
-* __pendingDistance__ : buffer distance in points away from the high/low or close price whichever farthest from the close price. Used to avoid false confirmation.
-* __ExpirationHours__ : pending order expiration in hours.
+## Example
+![](./example.png)
 
 ## Test & Results 
 ### EURUSD Benchmark
-EURUSD D1, 2013-01-01 until 2023-04-29, 10000 USD initial balance, 0.1 lot/trade. Risking 2350 points and 0.75 TP factor.
+EURUSD D1, 2013-01-01 until 2023-04-29, 10000 USD initial balance, 0.1 lot/trade. Risking 100 points of SL and taking 260 point of TP. Commission is 4 USD per lot total round trip.
 The set file used in the test is included.
 
-* Net profit: 7749.72 USD. Which means 7749.72 pips of profit if using 0.1 lot/trade.
-* Profit trades: 73.68%
-* Total trades: 114
-* Profit factor: 2.12
-* Sharpe ratio: 1.82
-* Max. consecutive losses: 2x
-* Max. consecutive wins: 8x
+* Net profit: 10948.5 USD. Which means 10948.5 pips of profit if using 0.1 lot/trade.
+* Profit trades: 89.04%
+* Total trades: 5272
+* Profit factor: 2.89
+* Sharpe ratio: 39.5
+* Max. consecutive losses: 4x
+* Max. consecutive wins: 59x
 
-![](./equityCurve.png)
-![](./summary.png)
+![](./ScalperEquityCurve.png)
+![](./ScalperSummary.png)
 
 ### Porfolio Mode
-Portfolio consists of EURUSD,EURJPY,AUDUSD,AUDJPY, and GBPJPY. Test was done from 2015-01-01 until 2023-01-01, 10000 USD initial balance, pip calculation mode.
+Portfolio consists of EURUSD and USDJPY. Test was done from 2015-01-01 until 2023-01-01, 10000 USD initial balance, pip calculation mode.
 The set file for each pair is not included.
 
 * Net profit: 26966.22 pips
