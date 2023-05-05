@@ -22,7 +22,7 @@ By placing a stop order at the exact swing point, any liquidity grab will put ou
 4. If the trade is run futher into more profit, keep moving the trailling stop-loss Y points just above the current ask price.
 5. The tralling stop movement is calculated in tick-by-tick basis.
 
-If there is a trade still running, any subsequent signal to the same direction is ignored.
+Each pending order is only live for Z hours before deleted/expired. If there is already a pending order or a trade still running, any subsequent signal to the same direction is ignored.
 
 ![](./Entry.png)
 
