@@ -21,13 +21,28 @@ input int InpAtrSlowPeriod = 100;
 input int InpAtrFastPeriod = 20;
 input int InpSlPoint = 340;
 input double InpTpFactor = 0.45;
-input int InpExpirationHours = 13;
+
+static input double InpCommission = 4.0;
+enum ENUM_TPMODE {
+     TPMODE_BAILOUT,
+     TPMODE_FIXED
+};
+input ENUM_TPMODE InpTpMode = TPMODE_BAILOUT;
+input int InpMinimumBars = 10;
+
+input group "Time Parameters"
+input int InpExpirationHours = 2;                   // Expiration Hours
+input bool InpUseTimeFilter = true;                // Using Time Filter?
+input int InpStartTradingTime = 10;                // Trading Start at Hour (server time)
+input int InpStopTradingTime = 13;                 // Trading Stop at Hour (server time)
 
 CTrade trade;
 int totalBars;
 ulong buyPos, sellPos;
 int tpPoint;
 
+string currentTime, startTime, stopTime;
+bool tradingIsAllowed;
 
 int baselineHandle, atrBaselineHandle, atrFastHandle, atrSlowHandle;
 double baseline[], atrBaseline[], atrFast[], atrSlow[];
@@ -67,6 +82,10 @@ int OnInit()
                }
           }
      }
+
+     tradingIsAllowed = false;
+     StringConcatenate(startTime, IntegerToString(InpStartTradingTime, 2, '0'), ":00");
+     StringConcatenate(stopTime, IntegerToString(InpStopTradingTime, 2, '0'), ":30");
 
      IndicatorInit();
 
@@ -108,6 +127,14 @@ void IndicatorDeinit()
 //+------------------------------------------------------------------+
 void OnTick()
 {
+     datetime time = TimeCurrent();
+     currentTime = TimeToString(time, TIME_MINUTES);
+     if(InpUseTimeFilter) {
+          tradingIsAllowed = CheckTradingTime();
+     } else {
+          tradingIsAllowed = true;
+     }
+
      int bars = iBars(_Symbol, InpTimeframe);
      if(totalBars != bars) {
           totalBars = bars;
@@ -121,7 +148,13 @@ void OnTick()
                double buyPrice = findBuySignal();
                buyPrice = NormalizeDouble(buyPrice, _Digits);
                if(buyPrice > 0) {
-                    executeBuy(buyPrice);
+                    if(tradingIsAllowed) {
+                         executeBuy(buyPrice);
+                    }
+               }
+          } else {
+               if(!tradingIsAllowed) {
+                    deletePendingOrder(buyPos);
                }
           }
 
@@ -129,10 +162,40 @@ void OnTick()
                double sellPrice = findSellSignal();
                sellPrice = NormalizeDouble(sellPrice, _Digits);
                if(sellPrice > 0) {
-                    executeSell(sellPrice);
+                    if(tradingIsAllowed) {
+                         executeSell(sellPrice);
+                    }
+               }
+          } else {
+               if(!tradingIsAllowed) {
+                    deletePendingOrder(sellPos);
                }
           }
      }
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+bool CheckTradingTime()
+{
+     if(StringSubstr(currentTime, 0, 5) == startTime) {
+          tradingIsAllowed = true;
+     }
+
+     if(StringSubstr(currentTime, 0, 5) == stopTime) {
+          tradingIsAllowed = false;
+     }
+
+     return tradingIsAllowed;
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//+------------------------------------------------------------------+
+void deletePendingOrder(ulong & posTicket)
+{
+     trade.OrderDelete(posTicket);
 }
 
 //+------------------------------------------------------------------+
@@ -167,9 +230,41 @@ void processPos(ulong &posTicket)
           return;
      } else {
           if(pos.PositionType() == POSITION_TYPE_BUY) {
+               datetime openTime;
+               pos.InfoInteger(POSITION_TIME, openTime);
 
+               int positionBars = Bars(_Symbol, InpTimeframe, openTime, TimeCurrent()) - 1;
+
+               if((InpTpMode == TPMODE_BAILOUT) && (positionBars > InpMinimumBars)) {
+                    double _size;
+                    double _profit;
+
+                    pos.InfoDouble(POSITION_VOLUME, _size);
+                    double _commission = _size * InpCommission;
+                    pos.InfoDouble(POSITION_PROFIT, _profit);
+
+                    if(_profit > _commission) {
+                         trade.PositionClose(buyPos);
+                    }
+               }
           } else if(pos.PositionType() == POSITION_TYPE_SELL) {
+               datetime openTime;
+               pos.InfoInteger(POSITION_TIME, openTime);
 
+               int positionBars = Bars(_Symbol, InpTimeframe, openTime, TimeCurrent()) - 1;
+
+               if((InpTpMode == TPMODE_BAILOUT) && (positionBars > InpMinimumBars)) {
+                    double _size;
+                    double _profit;
+
+                    pos.InfoDouble(POSITION_VOLUME, _size);
+                    double _commission = _size * InpCommission;
+                    pos.InfoDouble(POSITION_PROFIT, _profit);
+
+                    if(_profit > _commission) {
+                         trade.PositionClose(sellPos);
+                    }
+               }
           }
      }
 }
