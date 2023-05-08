@@ -17,11 +17,11 @@
 input group  "Risk Management"
 static input double Lots = 0.1;
 input group "Technical Parameters"
-input int Lookback = 29;                        // Lookback period (bars)
+input int Lookback = 35;                        // Lookback period (bars)
 input int TakeProfit = 260;                     // Take Profit (points)
 input int StopLoss = 100;                       // Stop Loss (points)
 input int TraillingStop = 10;                   // Trailling Stop (points)
-input int TraillingTrigger = 20;                // Trailling Stop Trigger (points)
+input int TraillingTrigger = 15;                // Trailling Stop Trigger (points)
 input ENUM_TIMEFRAMES Timeframe = PERIOD_M15;
 
 input group "Time Parameters"
