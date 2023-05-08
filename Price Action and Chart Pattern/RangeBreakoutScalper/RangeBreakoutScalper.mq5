@@ -17,18 +17,18 @@
 input group  "Risk Management"
 static input double Lots = 0.1;
 input group "Technical Parameters"
-input int Lookback = 22;                        // Lookback period (bars)
+input int Lookback = 29;                        // Lookback period (bars)
 input int TakeProfit = 260;                     // Take Profit (points)
 input int StopLoss = 100;                       // Stop Loss (points)
 input int TraillingStop = 10;                   // Trailling Stop (points)
-input int TraillingTrigger = 15;                // Trailling Stop Trigger (points)
+input int TraillingTrigger = 20;                // Trailling Stop Trigger (points)
 input ENUM_TIMEFRAMES Timeframe = PERIOD_M15;
 
 input group "Time Parameters"
-input int ExpirationHours = 3;                  // Expiration Hours
+input int ExpirationHours = 2;                  // Expiration Hours
 input bool useTimeFilter = true;                // Using Time Filter?
-input int StartTradingTime = 12;                // Trading Start at Hour (server time)
-input int StopTradingTime = 17;                 // Trading Stop at Hour (server time)
+input int StartTradingTime = 14;                // Trading Start at Hour (server time)
+input int StopTradingTime = 21;                 // Trading Stop at Hour (server time)
 
 input group "General Settings"
 input static int Magic = 1;                     // Magic Number
@@ -338,13 +338,27 @@ double findHigh()
 
      double highestLookback = 0;
      for(int i = 0; i < Lookback; i++) {
-          double tmp = iHigh(_Symbol, Timeframe, i + 2);
+          double tmp = iHigh(_Symbol, Timeframe, i + 1);
           if(tmp > highestLookback) {
                highestLookback = tmp;
           }
      }
 
-     return highestLookback;
+     double lowestLookback = DBL_MAX;
+     for(int i = 0; i < Lookback; i++) {
+          double tmp = iLow(_Symbol, Timeframe, i + 1);
+          if(tmp < lowestLookback) {
+               lowestLookback = tmp;
+          }
+     }
+
+     double close = iClose(_Symbol, Timeframe, 1);
+     double range = highestLookback - lowestLookback;
+     if(close < (0.5 * range + lowestLookback)) {
+          return highestLookback;
+     }
+
+     return -1;
 }
 
 //+------------------------------------------------------------------+
@@ -366,14 +380,28 @@ double findLow()
      return -1;
      */
 
+     double highestLookback = 0;
+     for(int i = 0; i < Lookback; i++) {
+          double tmp = iHigh(_Symbol, Timeframe, i + 1);
+          if(tmp > highestLookback) {
+               highestLookback = tmp;
+          }
+     }
+
      double lowestLookback = DBL_MAX;
      for(int i = 0; i < Lookback; i++) {
-          double tmp = iLow(_Symbol, Timeframe, i + 2);
+          double tmp = iLow(_Symbol, Timeframe, i + 1);
           if(tmp < lowestLookback) {
                lowestLookback = tmp;
           }
      }
 
-     return lowestLookback;
+     double close = iClose(_Symbol, Timeframe, 1);
+     double range = highestLookback - lowestLookback;
+     if(close > (0.5 * range + lowestLookback)) {
+          return lowestLookback;
+     }
+
+     return -1;
 }
 //+------------------------------------------------------------------+
