@@ -1,5 +1,5 @@
 # Scalper Trading Strategy
-**This strategy is risky. The average TP is quite low. The real life results will highly dependant on the trading costs. To maximize the profit potential, only use this strategy on a low commission, low spread, and low slippage broker, otherwise, the trading cost will eat up the profits!**
+**This strategy is risky. The average TP is quite low. The real life results will highly dependant on the trading costs. To maximize the profit potential, only use this strategy on a low commission, low spread, and low slippage broker. Otherwise, the trading cost will eat up the profits!**
 
 ## Concept
 At every swing point, a liquidity zone is built-up. Liquidity is any pending stop order placed at any price. If an upward price move hit a buy-stop order (**buy-side liquidity grab**), the stop order execution will move the price up further (breakout). Sometimes, the breakout will continue to move in the same direction further, or quickly fading. 
